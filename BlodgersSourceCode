@@ -1,0 +1,100 @@
+/*
+ Name	:	Karlo Pangilinan
+ Course	:	MCO455 NAAL
+ PROJECT:	Home Security Monitoring System
+ */
+
+#include <hidef.h> /* for EnableInterrupts macro */
+#include "derivative.h" /* include peripheral declarations */
+#include "D:\library_de1.h"	//libraries
+
+void MenuDisplay(void);
+void UserChoice(void);
+void scr_writech(volatile unsigned char input);
+
+volatile unsigned char choice;
+void main(void) {
+	LCD_COLS = 16;
+	LCD_ROWS = 4;
+	SOPT_COPE = 0; 		// disable COP
+	devices_init();
+	sci_init();
+	MenuDisplay();
+	
+	for(;;)
+		
+		UserChoice();
+	
+		if('1' == choice)
+		{
+			
+		}
+		
+	
+}
+
+void MenuDisplay(void)
+{
+		int index;
+		
+		scr_clear();
+		scr_setcursor(1, 25);
+		scr_print("BLODGERS HOME MONITORING SYSTEM");
+		scr_setcursor(3, 35);
+		scr_print("MAIN MENU");
+		scr_setcursor(5, 30);
+		scr_print("1. ENABLE BURGLAR ALARM");
+		scr_setcursor(6, 30);
+		scr_print("2. RESET PASSWORD");
+		scr_setcursor(7, 30);
+		scr_print("3. RESET ALARM");
+		scr_setcursor(8, 30);
+		scr_print("4. DeACTIVATE ALARM");
+		scr_setcursor(10, 30);
+		scr_print("Your Choice -> ");
+		scr_setcursor(12, 26);
+		scr_print("ALARM STATUS");
+		scr_setcursor(12, 45);
+		scr_print("ZONE Sensor STATUS");
+		scr_setcursor(15, 26);
+		scr_print("Local Alarm");
+		
+		for(index = 0; index < 8 ; index++)
+		{
+			scr_setcursor(14 + index ,47);
+			scr_print("Zone");
+			scr_setcursor(14 + index , 49);
+			scr_writech(index);		//print as a single character
+		}
+}
+
+void UserChoice(void)
+{ 
+	//volatile unsigned char input;
+	
+	scr_setcursor(10, 43);
+	choice = kb_getchar();	// get and returns a character
+	
+	if ((choice <  '1') & (choice > '4') )
+	{
+		return;
+	}
+	else
+	{
+		scr_setcursor(10, 43);
+		scr_writech(choice);
+	}
+}
+
+void scr_writech(volatile unsigned char input)
+{
+	while((SCI2S1 & 0x80) != 0x80);	//wait until transmitter(tx) is empty
+	SCI2D = input;					//send keyboard character to pc screen
+}
+
+/*
+void zoneStatus()
+{
+	
+}
+*/
